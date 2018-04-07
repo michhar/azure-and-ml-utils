@@ -20,7 +20,7 @@ __license__ = "MIT"
 __status__ = "Development"
 
 def num2word(num):
-    """This util converts an integer to it's word represenation"""
+    """This util converts an integer to its word represenation"""
     p = inflect.engine()
     numword = list(p.number_to_words(num))
     # Capitalize first letter
@@ -103,10 +103,10 @@ def main(file, teaminfoflag):
         smalldict['Usernames'] = tmpusernames
         smalldict['TeamName'] = 'Team {}'.format(num2word(teamnum))
         teaminfolist.append(smalldict)
-    print(json.dumps(teaminfolist, indent=4))
+    teaminfo_str = json.dumps(teaminfolist, indent=4)
+    print(teaminfo_str)
 
-    return tenantids_str, teaminfolist
-    
+    return tenantids_str, teaminfo_str
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -115,4 +115,9 @@ if __name__ == '__main__':
     parser.add_argument('--teaminfo', action='store_true')
 
     args = parser.parse_args()
-    main(args.file, args.teaminfo)
+    tenantids_str, teaminfo_str = main(args.file, args.teaminfo)
+
+    with open('tenantids_out.txt', 'w') as f:
+        f.write(tenantids_str)
+    with open('teaminfo_out.txt', 'w') as f:
+        f.write(teaminfo_str)
