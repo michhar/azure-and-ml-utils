@@ -19,6 +19,15 @@ __author__ = "Micheleen Harris"
 __license__ = "MIT"
 __status__ = "Development"
 
+def num2word(num):
+    """This util converts an integer to it's word represenation"""
+    p = inflect.engine()
+    numword = list(p.number_to_words(num))
+    # Capitalize first letter
+    numword[0] = str.upper(numword[0])
+    numword = ''.join(numword)
+    return numword
+
 def main(file, teaminfoflag):
     """Function to read a file with Azure subs, IDs, passwords
     and output a comma separated string of Tenant IDs plus (optionally) 
@@ -42,9 +51,6 @@ def main(file, teaminfoflag):
         A json representation of User, Subscription ID, and a Team
         from the special csv file from a vendor (script could be generalized)
     """
-    # Start your engines!  This is for numbers to word representation for team names
-    p = inflect.engine()
-
     with open(file) as csvfile:
         tenantids = set()
         reader = csv.DictReader(csvfile)
@@ -54,32 +60,23 @@ def main(file, teaminfoflag):
         next(reader, None)
 
         if teaminfoflag:
-            teaminfolist = []
-            smalldict = defaultdict()
-            tmpusernames = []
-            teamnum = 1
-            subid = ''
+            # Initialize everything
+            teaminfolist, smalldict, tmpusernames, teamnum, subid = [], defaultdict(), [], 1, ''
 
         for i in range(len(rowlist)):
             row = rowlist[i]
 
             # Blank row, add collated info to list
             if not row['Azure Account Log-In']:
+            # kindly, the creator of this particular file left blank lines between teams
                 if teaminfoflag and subid:
                     smalldict['SubscriptionId'] = subid
                     smalldict['Usernames'] = tmpusernames
-                    # Convert int to a word and capitalize first letter for nice team name
-                    numword = list(p.number_to_words(teamnum))
-                    numword[0] = str.upper(numword[0])
-                    numword = ''.join(numword)
-                    smalldict['TeamName'] = 'Team {}'.format(numword)
+                    smalldict['TeamName'] = 'Team {}'.format(num2word(teamnum))
                     teaminfolist.append(smalldict)
-
                     # Set up for next team - reset things
-                    tmpusernames = []
-                    smalldict = defaultdict()
+                    tmpusernames, smalldict = [], defaultdict()
                     teamnum += 1
-                # kindly, the creator of this particular file left blank lines between teams
                 continue
 
             user = row['Azure Account Log-In'].replace(' Azure UserName: ','')
@@ -104,11 +101,7 @@ def main(file, teaminfoflag):
     if teaminfoflag:
         smalldict['SubscriptionId'] = subid
         smalldict['Usernames'] = tmpusernames
-        # Convert int to a word with inflect library and capitalize first letter
-        numword = list(p.number_to_words(teamnum))
-        numword[0] = str.upper(numword[0])
-        numword = ''.join(numword)
-        smalldict['TeamName'] = 'Team {}'.format(numword)
+        smalldict['TeamName'] = 'Team {}'.format(num2word(teamnum))
         teaminfolist.append(smalldict)
     print(json.dumps(teaminfolist, indent=4))
 
