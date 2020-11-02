@@ -3,8 +3,12 @@ Converts Pascal VOC format (VOTT generated) to YOLO format.
 For use with Darknet program on Linux machine.  The annotations
 for this script originated from using the VOTT labeling tool.
 
+IMPORTANT:  Update line 42 before running to represent your classes.
+
+Based on:  https://github.com/AlexeyAB/darknet/blob/master/scripts/voc_label.py
+
 Warning:  this script deletes the "data" folder to recreate it.
-Also, line 34 must be updated for this script to work with user
+Also, line 42 must be updated for this script to work with user
 annotations.
 
 Notes:
@@ -35,7 +39,7 @@ import random
 
 
 # User defined!  Change to your needs and order matters:
-classes = ['helmet', 'no_helmet']
+classes = ['Squid']
 
 # Constant
 obj_data_contents = """
@@ -43,6 +47,20 @@ train  = build/darknet/x64/data/train.txt
 valid  = build/darknet/x64/data/valid.txt
 names = build/darknet/x64/data/obj.names
 backup = backup/"""
+
+def convert(size, box):
+    """Perform the actual conversion calculations"""
+    dw = 1./(size[0])
+    dh = 1./(size[1])
+    x = (box[0] + box[1])/2.0 - 1
+    y = (box[2] + box[3])/2.0 - 1
+    w = box[1] - box[0]
+    h = box[3] - box[2]
+    x = x*dw
+    w = w*dw
+    y = y*dh
+    h = h*dh
+    return (x,y,w,h)
 
 def convert_annotation(image_id, annot_folder, image_ext):
     in_file = open('{}/Annotations/{}.xml'.format(annot_folder, image_id))
@@ -53,10 +71,26 @@ def convert_annotation(image_id, annot_folder, image_ext):
     for size in root.iter('size'):
         image_width = int(size.find('width').text)
         image_height = int(size.find('height').text)
+
+    # Create train.txt and valid.txt
+    for obj in root.iter('object'):
+        # Create train.txt and valid.txt (randomly assign images to these lists)
+        r = random.choice(range(10))
+        img_file = 'build/darknet/x64/data/img/{}.{}'.format(image_id, image_ext)
+        if r < 2: # 20% of images will be in validation set
+            with open('data/valid.txt', 'a') as valid_list:
+                valid_list.write(img_file + '\n')
+        else:
+            with open('data/train.txt', 'a') as train_list:
+                train_list.write(img_file + '\n')
+        break
     
     # Get bounding boxes
     for obj in root.iter('object'):
-        difficult = obj.find('difficult').text
+        if 'difficult' in obj:
+            difficult = obj.find('difficult').text
+        else:
+            difficult = 0
         class_name = obj.find('name').text
         # Check if the class name is in the user specified classes or 
         # it's difficult (skip if so)
@@ -64,28 +98,20 @@ def convert_annotation(image_id, annot_folder, image_ext):
             continue
         cls_id = classes.index(class_name)
         xmlbox = obj.find('bndbox')
-        b = (int(float(xmlbox.find('xmin').text)), int(float(xmlbox.find('ymin').text)),
-            int(float(xmlbox.find('xmax').text)), int(float(xmlbox.find('ymax').text)))
-        # Calcute YOLO bounding boxes
-        # b is xmin,ymin,xmax,ymax
-        xmin, ymin, xmax, ymax = b
-        # Normalize 0-1
-        xmin, xmax = xmin / image_width, xmax / image_width
-        ymin, ymax = ymin / image_height, ymax / image_height
-        # YOLO format
-        box_height = ymax - ymin
-        box_width = xmax - xmin
-        x_center = xmin + 0.5*box_width
-        y_center = ymin + 0.5*box_height # subtract 1 because measuring from top
-        yolo_box = [x_center, y_center, box_width, box_height]
+        b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text), float(xmlbox.find('ymax').text))
+        bb = convert((image_width,image_height), b)
 
         with open('data/img/%s.txt'%(image_id), 'a') as out:
             # Write out annotation
-            print('writing output to {}'.format('data/obj/%s.txt'%(image_id)))
-            out.write(str(cls_id) + " " + ",".join([str(a) for a in yolo_box]) + '\n')
+            print('writing output to {}'.format('data/img/%s.txt'%(image_id)))
+            out.write(str(cls_id) + " " + " ".join([str(a) for a in bb]) + '\n')
             # Copy image
             shutil.copy('{}/JPEGImages/{}.{}'.format(annot_folder, image_id, image_ext),
                 'data/img/{}.{}'.format(image_id, image_ext))
+
+            with open('data/obj.names', 'w') as names_file:
+                for c in classes:
+                    names_file.write(c + '\n')
 
 if __name__ == '__main__':
     # For command line options
@@ -121,20 +147,6 @@ if __name__ == '__main__':
         # Image id is name w/o extension, annotation input folder and 
         # image file extension
         convert_annotation(img_id, args.annot_folder, split_name[-1])
-
-        # Create train.txt and valid.txt (randomly assign images to these lists)
-        r = random.choice(range(10))
-        dir_for_darknet = 'build/darknet/x64/data/img/'
-        if r < 1: # 10% of images will be in validation set
-            with open('data/valid.txt', 'a') as valid_list:
-                valid_list.write(dir_for_darknet + img_id_base + '\n')
-        else:
-            with open('data/train.txt', 'a') as train_list:
-                train_list.write(dir_for_darknet + img_id_base + '\n')
-
-        with open('data/obj.names', 'w') as names_file:
-            for c in classes:
-                names_file.write(c + '\n')
 
         with open('data/obj.data', 'w') as paths_file:
             paths_file.write('classes = {}'.format(len(classes)))
