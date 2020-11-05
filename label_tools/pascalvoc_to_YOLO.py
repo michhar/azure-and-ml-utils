@@ -67,10 +67,9 @@ def convert_annotation(image_id, annot_folder, image_ext):
     tree=ET.parse(in_file)
     root = tree.getroot()
 
-    # Get image width and height by walking tree (there's only one size entry)
-    for size in root.iter('size'):
-        image_width = int(size.find('width').text)
-        image_height = int(size.find('height').text)
+    size = root.find('size')
+    image_width = int(size.find('width').text)
+    image_height = int(size.find('height').text)
 
     # Create train.txt and valid.txt
     for obj in root.iter('object'):
@@ -100,6 +99,12 @@ def convert_annotation(image_id, annot_folder, image_ext):
         xmlbox = obj.find('bndbox')
         b = (float(xmlbox.find('xmin').text), float(xmlbox.find('xmax').text), float(xmlbox.find('ymin').text), float(xmlbox.find('ymax').text))
         bb = convert((image_width,image_height), b)
+
+        # Bound the boxes 0-1 (could use np.clip - todo)
+        bb = list(bb)
+        for i in range(len(bb)):
+            if bb[i] > 1.0: bb[i] = 1.0
+            if bb[i] < 0.0: bb[i] = 0.0
 
         with open('data/img/%s.txt'%(image_id), 'a') as out:
             # Write out annotation
