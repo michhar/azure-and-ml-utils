@@ -14,8 +14,6 @@ gi.require_version('GstRtspServer', '1.0')
 
 from gi.repository import Gst, GstRtspServer, GObject, GLib
 
-loop = GLib.MainLoop()
-Gst.init(None)
 
 class TestRtspMediaFactory(GstRtspServer.RTSPMediaFactory):
     def __init__(self, video_file):
@@ -23,12 +21,14 @@ class TestRtspMediaFactory(GstRtspServer.RTSPMediaFactory):
         self.video_file = video_file
 
     def do_create_element(self, url):
-        #set mp4 file path to filesrc's location property
-        src_demux = "filesrc location={} ! qtdemux name=demux".format(self.video_file)
+        # Set video file path to filesrc's location property
+        src = "filesrc location={}".format(self.video_file)
+        demux =  "qtdemux name=demux"
         h264_transcode = "demux.video_0"
-        #uncomment following line if video transcoding is necessary
-        #h264_transcode = "demux.video_0 ! decodebin ! queue ! x264enc"
-        pipeline = "{0} {1} ! queue ! rtph264pay name=pay0 config-interval=1 pt=96".format(src_demux, h264_transcode)
+        ## Uncomment following line if video transcoding is necessary
+        # h264_transcode = "demux.video_0 ! decodebin ! queue ! x264enc"
+        #pipeline = "{0} ! {1} {2} ! queue ! rtph264pay name=pay0 config-interval=1 pt=96".format(src, demux, h264_transcode)
+        pipeline = "{0} ! rtph264pay name=pay0 config-interval=1 pt=96".format(src)
         print ("Element created: " + pipeline)
         return Gst.parse_launch(pipeline)
 
@@ -44,9 +44,17 @@ class GstreamerRtspServer():
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('video', type=str, help="Video media file")
+    parser.add_argument('--video', type=str, help="Video media file")
 
     args = parser.parse_args()
-    
+
+    Gst.init(None)
     s = GstreamerRtspServer(args)
+
+    print("Running as - rtsp://127.0.0.1:8554/stream1")
+
+    loop = GLib.MainLoop()
     loop.run()
+
+
+
