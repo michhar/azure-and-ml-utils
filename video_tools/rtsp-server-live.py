@@ -2,6 +2,7 @@
 Creates an RTSP endpoint from a live stream (e.g. webcam) 
 at rtsp://127.0.0.1:8554/stream2 using GStreamer Python 
 API and OpenCV.
+Based on https://github.com/Azure-Samples/azure-intelligent-edge-patterns/tree/master/factory-ai-vision/rtsp-generator
 """
 import argparse
 import cv2
