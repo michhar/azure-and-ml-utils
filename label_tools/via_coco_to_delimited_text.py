@@ -140,6 +140,7 @@ def read_annots(coco_json, coco_names_path):
 
             # id_to_class[idx] = class_name
             class_to_id[class_name] = idx
+            idx+=1
 
     print("size of images {}".format(len(images)))
     print("size of annotations {}".format(len(annotations)))
