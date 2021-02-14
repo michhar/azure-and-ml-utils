@@ -11,6 +11,9 @@ __pycache__/
 *$py.class
 *.h5
 data
+*.json
+*.names
+example*
 
 # C extensions
 *.so
