@@ -129,7 +129,6 @@ def read_annots(coco_json, coco_names_path):
     categories = coco["categories"]
 
     class_to_id = {}
-    # id_to_class = {}
 
     with open(coco_names_path, 'w') as fp:
         idx = 0
@@ -138,7 +137,6 @@ def read_annots(coco_json, coco_names_path):
             class_name = cat["name"].strip()
             fp.write(class_name+"\n")
 
-            # id_to_class[idx] = class_name
             class_to_id[class_name] = idx
             idx+=1
 
@@ -172,7 +170,11 @@ def convert(images, annotations, categories, class_to_id):
 
     for annotation in tqdm(annotations, desc="Parsing"):
         image_id = annotation["image_id"]
-        category_id = annotation["category_id"]
+        if "category_id" in annotation:
+            category_id = annotation["category_id"]
+        else:
+            print("WARNING: 'category_id' not in annotation for image {}.".format(image_id))
+            continue
 
         # Find image
         file_name = None
