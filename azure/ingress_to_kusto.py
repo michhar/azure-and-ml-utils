@@ -10,7 +10,7 @@ It must be an AAD application / Service Principal that is cleared for access to
 the ADX databases (give this Service Principal access to ADX first). The variables needed are:
 - TENANT_ID
 - CLIENT_ID
-- SECRET
+- CLIENT_SECRET
 
 To run you will need to pip install the following Python packages:
 
