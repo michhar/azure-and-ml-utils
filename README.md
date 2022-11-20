@@ -1,11 +1,18 @@
 # Azure and General ML Scripts
 
-| Script | Description | Necessary Installs |
-|---|---|---|
-| custom_labeling_classificaiton.py | Interactive script to label images for classification | `matplotlib` |
-| convert_tensorflow_pb2checkpoint.py | Convert `tensorflow` protobuf files to checkpoint files and explore graph | `tensorflow` |
-| extract_tenantids.py | Simple script to extract tenant ids | [Azure SDK](https://github.com/Azure/azure-sdk-for-python#installation) |
-| download_from_blob_storage.py | Download files from Azure Blob Storage | [Azure Blob Storage](https://github.com/Azure/azure-storage-python#getting-started) |
-| upload_to_blob_storage.py | Upload files from local to Azure Blob Storage | [Azure Blob Storage](https://github.com/Azure/azure-storage-python#getting-started)  |
+This repo contains basic Python 3 scripts and examples for various Azure-resource and ML related tasks.
 
+## Prerequisites
 
+1. Command line / terminal program.
+2. Install Python (recommended is Anaconda Python 3.8+ or Python virtual environments to keep things tidy and nuclear)
+3. Each script/folder has it's own Python package requirements that need to be installed with `pip`
+
+## Repo structure
+
+| Folder | Description | 
+|---|---|
+| `azure` | Various Azure Python SDK-based scripts |
+| `model_converters` | Various ML model format converters |
+| `label_tools` | Various data labeling tools for use with ML frameworks |
+| `video_tools` | Various scripts to manipulate video |
