@@ -1,10 +1,11 @@
-# Python Visuals
-
-Also, these Python visuals may be used with Power BI
+# Python Visuals for Exploratory Data Analysis
 
 
-The following is a seasonal plot example aggregating across weeks for two datasets.  It is powerful in that you could pick up weekly patterns.  This could be changed to hourly or monthly if you have multiple years of data.
-```
+The following is a seasonal plot example aggregating across weeks for two datasets.  It is powerful in that you could pick up weekly or daily (or any time aggregate) patterns.  This could be changed to hourly or even monthly if you have multiple years of data.  It assumes the `index` of the pandas `dataset` dataframe is a DateTimeIndex.
+
+Also, these Python visuals may be used with Power BI.
+
+```python
 # Paste or type your script code here:
 
 import pandas as pd
@@ -72,10 +73,8 @@ data_2 = data_2.sort_values(['Week'], ascending=[True])
 
 # Fix dates (convert week number to the monday of that week as a date)
 data_1['Date'] = pd.to_datetime([time.asctime(time.strptime('{} {} 1'.format(data_1['Year'][i], data_1['Week'][i]), '%Y %W %w')) for i in range(data_1.shape[0])])
-data_1['Date'] = [str(d)[:10] for d in data_bb['Date']]
+data_1['Date'] = [str(d)[:10] for d in data_1['Date']]
 data_2['Date'] = data_1['Date']
 
 seasonal_plot(data_1, data_2, isp_name='ISP_Name')
-
-
 ```
