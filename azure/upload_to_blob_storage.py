@@ -1,9 +1,9 @@
 """
-Upload data to blob storage with latest package version (tested with 12.3.1)
+Python script to upload data to blob storage (tested with azure-storage-blob==12.3.1)
 
 Make sure to set the environment variables before running:
-STORAGE_CONNECTION_STRING
-STORAGE_CONTAINER_NAME_TRAINDATA
+- STORAGE_CONNECTION_STRING
+- STORAGE_CONTAINER_NAME
 """
 import os
 from azure.storage.blob import BlobServiceClient
@@ -20,8 +20,8 @@ def arg_parse():
 
 args = arg_parse()
 
-CONN_STRING=os.getenv("STORAGE_CONNECTION_STRING", "")
-CONTAINER=os.getenv("STORAGE_CONTAINER_NAME_RAWDATA", "")
+CONN_STRING = os.getenv("STORAGE_CONNECTION_STRING", "")
+CONTAINER = os.getenv("STORAGE_CONTAINER_NAME", "")
 
 # Instantiate a BlobServiceClient using a connection string
 blob_service_client = BlobServiceClient.from_connection_string(CONN_STRING)
