@@ -33,7 +33,7 @@ container_client = blob_service_client.get_container_client(CONTAINER)
 try:
     container_client.create_container()
 except Exception as err:
-    print("WARNING: ", err)
+    print("WARNING: problem creating new container (the container may already exist)")
     pass
 
 for filename in glob.iglob(os.path.join(args.directory, '**', '*'), recursive=True):
@@ -45,10 +45,11 @@ for filename in glob.iglob(os.path.join(args.directory, '**', '*'), recursive=Tr
                 print('Uploading ', filename)
                 container_client.upload_blob(name=filename, data=data)
             except Exception as err:
-                print("WARNING: ", err)
+                print("WARNING: issue uploading (the file may already exist)")
                 pass
 
 # Check that the files uploaded correctly to blob
 generator = container_client.list_blobs()
+print('Current Blobs in Azure for this folder: ')
 for blob in generator:
-    print("Blob in Azure: " + blob.name)
+    print("  Blob/file: " + blob.name)
