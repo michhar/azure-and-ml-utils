@@ -1,0 +1,4 @@
+statsmodels~=0.14
+pandas~=2.3
+scikit-learn~=1.7
+matplotlib~=3.10
