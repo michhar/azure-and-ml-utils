@@ -11,6 +11,9 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 from PIL import Image
 import argparse
 
+import matplotlib
+matplotlib.use('agg')
+
 
 def main(input_file, output_file):
     data = Image.open(input_file).convert('L')
