@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=65.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "text-deidentification"
+version = "0.1.0"
+description = "Clinical text de-identification using Presidio and Hugging Face models"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+
+dependencies = [
+    "presidio-analyzer>=2.2.0",
+    "presidio-anonymizer>=2.2.0",
+    "huggingface-hub>=0.16.0",
+    "transformers>=4.30.0",
+    "spacy>=3.5.0",
+    "torch>=2.0.0",
+]
+
+[project.optional-dependencies]
+stanza = [
+    "stanza>=1.4.2",
+    "spacy-stanza>=1.0.0",
+]
+
+spacy-hf = [
+    "spacy-huggingface-pipelines>=0.0.4",
+]
+
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "ruff>=0.0.270",
+]
+
+all = [
+    "text-deidentification[stanza,spacy-hf,dev]",
+]
+
+[project.urls]
+Repository = "https://github.com/micheleenharris/my-azure-and-ml-utils"
+Documentation = "https://github.com/micheleenharris/my-azure-and-ml-utils/tree/main/deidentification"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.black]
+line-length = 100
+target-version = ["py38", "py39", "py310"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+
