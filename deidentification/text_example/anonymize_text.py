@@ -9,6 +9,9 @@ from presidio_anonymizer.entities import OperatorConfig
 from presidio_analyzer.nlp_engine import NerModelConfiguration, NlpEngineProvider
 from presidio_analyzer.nlp_engine import StanzaNlpEngine, TransformersNlpEngine
 
+# Register the hf_token_pipe factory for spaCy (required for TransformersNlpEngine)
+from presidio_analyzer.nlp_engine.transformers_nlp_engine import TransformersNlpEngine  # noqa: F811
+
 
 def main(model_choice, filename, output_file):
 

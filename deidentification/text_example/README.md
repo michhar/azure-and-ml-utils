@@ -6,18 +6,18 @@ This sample shows how to de-identify text by removing or replacing personally id
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.10 or higher
 - [uv](https://docs.astral.sh/uv/) package manager
 
 ### Setup with uv
 
-1. **Install dependencies**
+- Option 1: **Install dependencies with `uv sync`** (recommended)
 
    ```bash
-   uv pip install -e .
+   uv sync
    ```
 
-2. **Install with all optional dependencies** (recommended)
+- Option 2: **Install all optional dependencies with `pip`**
 
    ```bash
    uv pip install -e ".[all]"
@@ -28,7 +28,7 @@ This sample shows how to de-identify text by removing or replacing personally id
    - `[spacy-hf]` – Hugging Face pipeline integration with spaCy
    - `[dev]` – Development tools (pytest, black, ruff)
 
-3. **Install specific extras** (if preferred)
+- Option 3: **Install specific extras with `pip`**
 
    ```bash
    # For Stanza model support
@@ -41,6 +41,8 @@ This sample shows how to de-identify text by removing or replacing personally id
 ### Model Setup
 
 Depending on which NER model you choose, download the required NLP models:
+
+> Note: if not using `uv`, replace the 
 
 **spaCy model:**
 ```bash
