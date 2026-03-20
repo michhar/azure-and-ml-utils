@@ -26,7 +26,8 @@ def main(model_choice, filename, output_file):
         # Define which model to use
         model_config = [{"lang_code": "en", "model_name": "en"}]
         # Create the Stanza NLP Engine based on this configuration
-        nlp_engine = StanzaNlpEngine(models=model_config, ner_model_configuration=configuration)
+        ner_model_configuration = NerModelConfiguration()
+        nlp_engine = StanzaNlpEngine(models=model_config, ner_model_configuration=ner_model_configuration)
     elif model_choice == "spacy":
         # Create NLP engine based on configuration
         configuration = {

@@ -18,13 +18,15 @@ dependencies = [
     "transformers>=4.30.0",
     "spacy>=3.5.0",
     "spacy-huggingface-pipelines>=0.0.4",
-    "torch>=2.0.0",
+    "spacy-stanza>=1.0.4",
+    "stanza>=1.6.1",
+    "torch==2.3.1",
 ]
 
 [project.optional-dependencies]
 stanza = [
-    "stanza>=1.4.2",
-    "spacy-stanza>=1.0.0",
+    "stanza>=1.6.1",
+    "spacy-stanza>=1.0.4",
 ]
 
 spacy-hf = [

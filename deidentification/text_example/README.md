@@ -42,21 +42,21 @@ This sample shows how to de-identify text by removing or replacing personally id
 
 Depending on which NER model you choose, download the required NLP models:
 
-> Note: if not using `uv`, replace the 
+> Note: if not using `uv`, replace `uv run` with `python`
 
 **spaCy model:**
 ```bash
-python -m spacy download en_core_web_lg
+uv run python -m spacy download en_core_web_lg
 ```
 
 **Stanza model:**
 ```bash
-python -c "import stanza; stanza.download('en')"
+uv run python -c "import stanza; stanza.download('en')"
 ```
 
 **Hugging Face model** (Stanford De-identifier):
 ```bash
-python download_hf_deidentifier_model.py
+uv run download_hf_deidentifier_model.py
 ```
 
 ## Usage
@@ -66,7 +66,7 @@ python download_hf_deidentifier_model.py
 Pre-download the Stanford de-identifier model to ensure it's available at runtime:
 
 ```bash
-python download_hf_deidentifier_model.py
+uv run download_hf_deidentifier_model.py
 ```
 
 This script downloads and caches:
@@ -78,7 +78,7 @@ This script downloads and caches:
 Run the anonymizer with your choice of NER model:
 
 ```bash
-python anonymize_text.py -m <model_choice> -f <input_file>
+uv run anonymize_text.py -m <model_choice> -f <input_file> -o <output_file>
 ```
 
 **Options:**
@@ -89,13 +89,13 @@ python anonymize_text.py -m <model_choice> -f <input_file>
 
 ```bash
 # Using spaCy
-python anonymize_text.py -m spacy -f sample_text.txt -o sample_text_anonymized.txt
+uv run anonymize_text.py -m spacy -f sample_text.txt -o sample_text_anonymized.txt
 
 # Using Stanza
-python anonymize_text.py -m stanza -f sample_text.txt -o sample_text_anonymized.txt
+uv run anonymize_text.py -m stanza -f sample_text.txt -o sample_text_anonymized.txt
 
 # Using Hugging Face Stanford De-identifier
-python anonymize_text.py -m hugging_face -f sample_text.txt -o sample_text_anonymized.txt
+uv run anonymize_text.py -m hugging_face -f sample_text.txt -o sample_text_anonymized.txt
 ```
 
 ## Important Notes
